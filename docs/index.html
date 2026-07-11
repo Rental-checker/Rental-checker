@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Alle huurwoningen — onder €1500</title>
+<style>
+  body { font-family: -apple-system, Arial, sans-serif; background: #f7f7f8; color: #1a1a1a; padding: 24px; }
+  h1 { font-size: 20px; }
+  .meta { color: #666; font-size: 13px; margin-bottom: 20px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #444; cursor: pointer; }
+  .tab-btn:hover { background: #f0f2fa; }
+  .tab-btn.active { background: #33437a; color: white; border-color: #33437a; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+  th { background: #fafafa; font-weight: 600; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { background: #f0f2fa; }
+  th.sortable::after { content: '⇅'; color: #bbb; font-size: 11px; margin-left: 5px; }
+  th.sortable[data-asc="1"]::after { content: '↑'; color: #33437a; }
+  th.sortable[data-asc="0"]::after { content: '↓'; color: #33437a; }
+  tr.is-new { background: #eefbf0; }
+  .new-badge { background: #1aa251; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }
+  .source-badge { background: #eef1fb; color: #33437a; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 10px; white-space: nowrap; }
+  a { color: #0a5cd8; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .empty { padding: 40px; text-align: center; color: #888; }
+</style>
+</head>
+<body>
+  <h1>Alle huurwoningen onder €1500</h1>
+  <div class="meta">Laatst gecontroleerd: 2026-07-11 14:24 &middot; 37 match(es), waarvan 37 nieuw</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('all', this)">All (37)</button><button class="tab-btn" onclick="showTab('ben-housing', this)">Ben Housing (4)</button><button class="tab-btn" onclick="showTab('liv-residential', this)">LIV Residential (6)</button><button class="tab-btn" onclick="showTab('rental-rotterdam', this)">Rental Rotterdam (12)</button><button class="tab-btn" onclick="showTab('oude-delft', this)">Oude Delft (4)</button><button class="tab-btn" onclick="showTab('rent-valley', this)">Rent Valley (3)</button><button class="tab-btn" onclick="showTab('verra-makelaars', this)">Verra Makelaars (8)</button><button class="tab-btn" onclick="showTab('van-weelde-vastgoed', this)">Van Weelde Vastgoed (0)</button><button class="tab-btn" onclick="showTab('ikwilhuren-nu', this)">ikwilhuren.nu (0)</button>
+  </div>
+  <div class="tab-panel active" id="tab-all"><table>
+  <thead>
+    <tr>
+      <th class="sortable" data-key="source" onclick="sortTable(this)">Bron</th>
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="150.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/vissersdijk/69fbdc3ab90b240a434b8b14" target="_blank">Vissersdijk</a></td>
+          <td>Rotterdam</td>
+          <td>€ 150</td>
+          <td>–</td>
+          <td>–</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="174.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/librijesteeg/6a4658f3eab673e871819cc6" target="_blank">Librijesteeg</a></td>
+          <td>Rotterdam</td>
+          <td>€ 174</td>
+          <td>–</td>
+          <td>–</td>
+          <td>In consultation</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="200.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/kruisplein-0-ong/695f944da09f279ffe594a3f" target="_blank">Kruisplein 0 ong</a></td>
+          <td>Rotterdam</td>
+          <td>€ 200</td>
+          <td>–</td>
+          <td>–</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Hillegersberg Zuid"
+            data-price="650"
+            data-size="14"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          <td data-source="Ben Housing"><span class="source-badge">Ben Housing</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/straatweg-55-d2-2/" target="_blank">Straatweg 55 D2</a></td>
+          <td>Hillegersberg Zuid</td>
+          <td>€ 650</td>
+          <td>14 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CW Den Haag"
+            data-price="823"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-804-2521cw-den-haag" target="_blank">Waldorpstraat 804</a></td>
+          <td>2521CW Den Haag</td>
+          <td>€ 823</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CZ Den Haag"
+            data-price="850"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1328-2521cz-den-haag" target="_blank">Waldorpstraat 1328</a></td>
+          <td>2521CZ Den Haag</td>
+          <td>€ 850</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CX Den Haag"
+            data-price="850"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1176-2521cx-den-haag" target="_blank">Waldorpstraat 1176</a></td>
+          <td>2521CX Den Haag</td>
+          <td>€ 850</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CX Den Haag"
+            data-price="857"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1142-2521cx-den-haag" target="_blank">Waldorpstraat 1142</a></td>
+          <td>2521CX Den Haag</td>
+          <td>€ 857</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CJ Den Haag"
+            data-price="857"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-445-a-2521cj-den-haag" target="_blank">Waldorpstraat 445 A</a></td>
+          <td>2521CJ Den Haag</td>
+          <td>€ 857</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CZ Den Haag"
+            data-price="857"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          <td data-source="LIV Residential"><span class="source-badge">LIV Residential</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1358-2521cz-den-haag" target="_blank">Waldorpstraat 1358</a></td>
+          <td>2521CZ Den Haag</td>
+          <td>€ 857</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="916"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/21-k?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 21K</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 916</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="925"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/21-y?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 21Y</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 925</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3028CC Rotterdam"
+            data-price="927"
+            data-size="50"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/engelsestraat/55-b?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Engelsestraat 55B</a></td>
+          <td>3028CC Rotterdam</td>
+          <td>€ 927</td>
+          <td>50 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3083MZ Rotterdam"
+            data-price="1001"
+            data-size="63"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/zandblokstraat/ref-03374?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Zandblokstraat</a></td>
+          <td>3083MZ Rotterdam</td>
+          <td>€ 1.001</td>
+          <td>63 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1034.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          <td data-source="Rent Valley"><span class="source-badge">Rent Valley</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/van-der-kunstraat-12-den-haag.html" target="_blank">Van der Kunstraat 12</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.034</td>
+          <td>–</td>
+          <td>–</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1036.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-f11/6a23693250a4894e81b0de7a" target="_blank">Martinus Nijhofflaan 2 F11</a></td>
+          <td>Delft</td>
+          <td>€ 1.036</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 03-08-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1042.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          <td data-source="Rent Valley"><span class="source-badge">Rent Valley</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/herderstraat-22-den-haag.html" target="_blank">Herderstraat 22</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.042</td>
+          <td>–</td>
+          <td>2</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1070.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-j9/6a503c42fd315b72f96ed4ba" target="_blank">Martinus Nijhofflaan 2 J9</a></td>
+          <td>Delft</td>
+          <td>€ 1.070</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 01-09-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1084.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          <td data-source="Rent Valley"><span class="source-badge">Rent Valley</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/de-perponcherstraat-78-d-den-haag.html" target="_blank">De Perponcherstraat 78-D</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.084</td>
+          <td>–</td>
+          <td>2</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3015CC Rotterdam"
+            data-price="1092"
+            data-size="45"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/'s-gravendijkwal/132-b?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">'s-Gravendijkwal 132B</a></td>
+          <td>3015CC Rotterdam</td>
+          <td>€ 1.092</td>
+          <td>45 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Carnisse"
+            data-price="1100"
+            data-size="25"
+            data-rooms="0"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          <td data-source="Ben Housing"><span class="source-badge">Ben Housing</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/pleinweg-146-a/" target="_blank">Pleinweg 146 A</a></td>
+          <td>Carnisse</td>
+          <td>€ 1.100</td>
+          <td>25 m²</td>
+          <td>0</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3016BG Rotterdam"
+            data-price="1139"
+            data-size="40"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/van-vollenhovenstraat/27-c?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Van Vollenhovenstraat 27C</a></td>
+          <td>3016BG Rotterdam</td>
+          <td>€ 1.139</td>
+          <td>40 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3076EN Rotterdam"
+            data-price="1168"
+            data-size="74"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/spinozaweg/219?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Spinozaweg 219</a></td>
+          <td>3076EN Rotterdam</td>
+          <td>€ 1.168</td>
+          <td>74 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1180.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-v7/6a44cf320866373e21f97dc9" target="_blank">Martinus Nijhofflaan 2 V7</a></td>
+          <td>Delft</td>
+          <td>€ 1.180</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 01-08-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1265"
+            data-size="60"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/718?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 718</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.265</td>
+          <td>60 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1265"
+            data-size="60"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/ref-03347?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 520</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.265</td>
+          <td>60 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3032BE Rotterdam"
+            data-price="1280"
+            data-size="70"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/noordsingel/48-a02?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Noordsingel 48A02</a></td>
+          <td>3032BE Rotterdam</td>
+          <td>€ 1.280</td>
+          <td>70 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1350.0"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          <td data-source="Oude Delft"><span class="source-badge">Oude Delft</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/oude-delft-e/" target="_blank">Oude Delft E</a></td>
+          <td></td>
+          <td>€ 1.350</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Gemeubileerd</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1353.25"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          <td data-source="Oude Delft"><span class="source-badge">Oude Delft</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/kerkstraat-a-3/" target="_blank">Kerkstraat A 3</a></td>
+          <td></td>
+          <td>€ 1.353,25</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Furnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1372.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          <td data-source="Oude Delft"><span class="source-badge">Oude Delft</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/kloksteeg-b/" target="_blank">Kloksteeg B</a></td>
+          <td></td>
+          <td>€ 1.372</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Unfurnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1381.0"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          <td data-source="Oude Delft"><span class="source-badge">Oude Delft</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/oude-delft-a-5/" target="_blank">Oude Delft A 5</a></td>
+          <td></td>
+          <td>€ 1.381</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Unfurnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="1388.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/groenendaal-85/6a4cd45051694a48fa24e37f" target="_blank">Groenendaal 85</a></td>
+          <td>Rotterdam</td>
+          <td>€ 1.388</td>
+          <td>–</td>
+          <td>2</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="1411"
+            data-size="58"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/30-l?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 30L</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 1.411</td>
+          <td>58 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Haverschmidtkwartier"
+            data-price="1450"
+            data-size="32"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          <td data-source="Ben Housing"><span class="source-badge">Ben Housing</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/julianalaan/" target="_blank">Julianalaan</a></td>
+          <td>Haverschmidtkwartier</td>
+          <td>€ 1.450</td>
+          <td>32 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1450.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          <td data-source="Verra Makelaars"><span class="source-badge">Verra Makelaars</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/den-haag/godetiaweg-115/6a4701ac17364713e378f2f2" target="_blank">Godetiaweg 115</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.450</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1460"
+            data-size="80"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          <td data-source="Rental Rotterdam"><span class="source-badge">Rental Rotterdam</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/607?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 607</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.460</td>
+          <td>80 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Nieuwe Westen"
+            data-price="1495"
+            data-size="37"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          <td data-source="Ben Housing"><span class="source-badge">Ben Housing</span></td>
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/adrien-mildersstraat-82/" target="_blank">Adrien Mildersstraat 82</a></td>
+          <td>Nieuwe Westen</td>
+          <td>€ 1.495</td>
+          <td>37 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-ben-housing"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="Hillegersberg Zuid"
+            data-price="650"
+            data-size="14"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/straatweg-55-d2-2/" target="_blank">Straatweg 55 D2</a></td>
+          <td>Hillegersberg Zuid</td>
+          <td>€ 650</td>
+          <td>14 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Carnisse"
+            data-price="1100"
+            data-size="25"
+            data-rooms="0"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/pleinweg-146-a/" target="_blank">Pleinweg 146 A</a></td>
+          <td>Carnisse</td>
+          <td>€ 1.100</td>
+          <td>25 m²</td>
+          <td>0</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Haverschmidtkwartier"
+            data-price="1450"
+            data-size="32"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/julianalaan/" target="_blank">Julianalaan</a></td>
+          <td>Haverschmidtkwartier</td>
+          <td>€ 1.450</td>
+          <td>32 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Nieuwe Westen"
+            data-price="1495"
+            data-size="37"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Ben Housing">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.benhousing.nl/aanbod/adrien-mildersstraat-82/" target="_blank">Adrien Mildersstraat 82</a></td>
+          <td>Nieuwe Westen</td>
+          <td>€ 1.495</td>
+          <td>37 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-liv-residential"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="2521CW Den Haag"
+            data-price="823"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-804-2521cw-den-haag" target="_blank">Waldorpstraat 804</a></td>
+          <td>2521CW Den Haag</td>
+          <td>€ 823</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CZ Den Haag"
+            data-price="850"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1328-2521cz-den-haag" target="_blank">Waldorpstraat 1328</a></td>
+          <td>2521CZ Den Haag</td>
+          <td>€ 850</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CX Den Haag"
+            data-price="850"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1176-2521cx-den-haag" target="_blank">Waldorpstraat 1176</a></td>
+          <td>2521CX Den Haag</td>
+          <td>€ 850</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CX Den Haag"
+            data-price="857"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1142-2521cx-den-haag" target="_blank">Waldorpstraat 1142</a></td>
+          <td>2521CX Den Haag</td>
+          <td>€ 857</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CJ Den Haag"
+            data-price="857"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-445-a-2521cj-den-haag" target="_blank">Waldorpstraat 445 A</a></td>
+          <td>2521CJ Den Haag</td>
+          <td>€ 857</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521CZ Den Haag"
+            data-price="857"
+            data-size="23"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="LIV Residential">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://livresidential.nl/huurwoningen/den-haag/den-haag/waldorpstraat-1358-2521cz-den-haag" target="_blank">Waldorpstraat 1358</a></td>
+          <td>2521CZ Den Haag</td>
+          <td>€ 857</td>
+          <td>23 m²</td>
+          <td>1</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-rental-rotterdam"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="916"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/21-k?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 21K</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 916</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="925"
+            data-size="24"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/21-y?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 21Y</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 925</td>
+          <td>24 m²</td>
+          <td>1</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3028CC Rotterdam"
+            data-price="927"
+            data-size="50"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/engelsestraat/55-b?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Engelsestraat 55B</a></td>
+          <td>3028CC Rotterdam</td>
+          <td>€ 927</td>
+          <td>50 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3083MZ Rotterdam"
+            data-price="1001"
+            data-size="63"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/zandblokstraat/ref-03374?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Zandblokstraat</a></td>
+          <td>3083MZ Rotterdam</td>
+          <td>€ 1.001</td>
+          <td>63 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3015CC Rotterdam"
+            data-price="1092"
+            data-size="45"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/'s-gravendijkwal/132-b?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">'s-Gravendijkwal 132B</a></td>
+          <td>3015CC Rotterdam</td>
+          <td>€ 1.092</td>
+          <td>45 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3016BG Rotterdam"
+            data-price="1139"
+            data-size="40"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/van-vollenhovenstraat/27-c?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Van Vollenhovenstraat 27C</a></td>
+          <td>3016BG Rotterdam</td>
+          <td>€ 1.139</td>
+          <td>40 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3076EN Rotterdam"
+            data-price="1168"
+            data-size="74"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/spinozaweg/219?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Spinozaweg 219</a></td>
+          <td>3076EN Rotterdam</td>
+          <td>€ 1.168</td>
+          <td>74 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1265"
+            data-size="60"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/718?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 718</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.265</td>
+          <td>60 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1265"
+            data-size="60"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/ref-03347?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 520</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.265</td>
+          <td>60 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="3032BE Rotterdam"
+            data-price="1280"
+            data-size="70"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/rotterdam/noordsingel/48-a02?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Noordsingel 48A02</a></td>
+          <td>3032BE Rotterdam</td>
+          <td>€ 1.280</td>
+          <td>70 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2521SC Den Haag"
+            data-price="1411"
+            data-size="58"
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/den-haag/laakweg/30-l?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Laakweg 30L</a></td>
+          <td>2521SC Den Haag</td>
+          <td>€ 1.411</td>
+          <td>58 m²</td>
+          <td>2</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="2382BL Zoeterwoude"
+            data-price="1460"
+            data-size="80"
+            data-rooms="3"
+            data-added="2026-07-11 14:24"
+            data-source="Rental Rotterdam">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.rentalrotterdam.nl/woningaanbod/huur/zoeterwoude/stadhouderslaan/607?forsaleorrent=1&moveunavailablelistingstothebottom=true&pricerange.maxprice=1500&take=14" target="_blank">Stadhouderslaan 607</a></td>
+          <td>2382BL Zoeterwoude</td>
+          <td>€ 1.460</td>
+          <td>80 m²</td>
+          <td>3</td>
+          <td>Appartement</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-oude-delft"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location=""
+            data-price="1350.0"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/oude-delft-e/" target="_blank">Oude Delft E</a></td>
+          <td></td>
+          <td>€ 1.350</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Gemeubileerd</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1353.25"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/kerkstraat-a-3/" target="_blank">Kerkstraat A 3</a></td>
+          <td></td>
+          <td>€ 1.353,25</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Furnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1372.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/kloksteeg-b/" target="_blank">Kloksteeg B</a></td>
+          <td></td>
+          <td>€ 1.372</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Unfurnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location=""
+            data-price="1381.0"
+            data-size="30"
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Oude Delft">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://oudedelft.com/oude-delft-a-5/" target="_blank">Oude Delft A 5</a></td>
+          <td></td>
+          <td>€ 1.381</td>
+          <td>30 m²</td>
+          <td>1</td>
+          <td>Unfurnished</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-rent-valley"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1034.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/van-der-kunstraat-12-den-haag.html" target="_blank">Van der Kunstraat 12</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.034</td>
+          <td>–</td>
+          <td>–</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1042.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/herderstraat-22-den-haag.html" target="_blank">Herderstraat 22</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.042</td>
+          <td>–</td>
+          <td>2</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1084.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Rent Valley">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://rentvalley.nl/en/de-perponcherstraat-78-d-den-haag.html" target="_blank">De Perponcherstraat 78-D</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.084</td>
+          <td>–</td>
+          <td>2</td>
+          <td>–</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-verra-makelaars"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="150.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/vissersdijk/69fbdc3ab90b240a434b8b14" target="_blank">Vissersdijk</a></td>
+          <td>Rotterdam</td>
+          <td>€ 150</td>
+          <td>–</td>
+          <td>–</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="174.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/librijesteeg/6a4658f3eab673e871819cc6" target="_blank">Librijesteeg</a></td>
+          <td>Rotterdam</td>
+          <td>€ 174</td>
+          <td>–</td>
+          <td>–</td>
+          <td>In consultation</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="200.0"
+            data-size=""
+            data-rooms=""
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/kruisplein-0-ong/695f944da09f279ffe594a3f" target="_blank">Kruisplein 0 ong</a></td>
+          <td>Rotterdam</td>
+          <td>€ 200</td>
+          <td>–</td>
+          <td>–</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1036.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-f11/6a23693250a4894e81b0de7a" target="_blank">Martinus Nijhofflaan 2 F11</a></td>
+          <td>Delft</td>
+          <td>€ 1.036</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 03-08-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1070.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-j9/6a503c42fd315b72f96ed4ba" target="_blank">Martinus Nijhofflaan 2 J9</a></td>
+          <td>Delft</td>
+          <td>€ 1.070</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 01-09-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Delft"
+            data-price="1180.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/delft/martinus-nijhofflaan-2-v7/6a44cf320866373e21f97dc9" target="_blank">Martinus Nijhofflaan 2 V7</a></td>
+          <td>Delft</td>
+          <td>€ 1.180</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Partly furnished · 01-08-2026</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Rotterdam"
+            data-price="1388.0"
+            data-size=""
+            data-rooms="2"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/rotterdam/groenendaal-85/6a4cd45051694a48fa24e37f" target="_blank">Groenendaal 85</a></td>
+          <td>Rotterdam</td>
+          <td>€ 1.388</td>
+          <td>–</td>
+          <td>2</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr>
+
+        <tr class="is-new"
+            data-location="Den Haag"
+            data-price="1450.0"
+            data-size=""
+            data-rooms="1"
+            data-added="2026-07-11 14:24"
+            data-source="Verra Makelaars">
+          
+          <td><span class="new-badge">NIEUW</span><a href="https://www.verra.nl/en/listings/residential/den-haag/godetiaweg-115/6a4701ac17364713e378f2f2" target="_blank">Godetiaweg 115</a></td>
+          <td>Den Haag</td>
+          <td>€ 1.450</td>
+          <td>–</td>
+          <td>1</td>
+          <td>Directly</td>
+          <td>2026-07-11 14:24</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-van-weelde-vastgoed"><div class="empty">Geen woningen gevonden die aan je filters voldoen.</div></div><div class="tab-panel" id="tab-ikwilhuren-nu"><div class="empty">Geen woningen gevonden die aan je filters voldoen.</div></div>
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function sortTable(th) {
+      var table = th.closest('table');
+      var key = th.dataset.key;
+      var numeric = th.dataset.numeric === '1';
+      var asc = th.getAttribute('data-asc') !== '1';
+      table.querySelectorAll('th.sortable').forEach(function(h) { h.removeAttribute('data-asc'); });
+      th.setAttribute('data-asc', asc ? '1' : '0');
+
+      var tbody = table.querySelector('tbody');
+      var rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort(function(a, b) {
+        var va = a.dataset[key] || '';
+        var vb = b.dataset[key] || '';
+        if (numeric) {
+          va = va === '' ? -Infinity : parseFloat(va);
+          vb = vb === '' ? -Infinity : parseFloat(vb);
+          return asc ? va - vb : vb - va;
+        }
+        return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      rows.forEach(function(r) { tbody.appendChild(r); });
+    }
+  </script>
+</body>
+</html>
