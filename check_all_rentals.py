@@ -714,7 +714,7 @@ def scrape_vanweelde():
 def scrape_ikwilhuren():
     url = "https://ikwilhuren.nu/aanbod/"
     city_query = "'s-Gravenhage, Zuid-Holland"
-    max_select_attempts = 3
+    max_select_attempts = 5
     max_pages_safety_cap = 20
 
     status_pattern = re.compile(r'(Direct beschikbaar|Beschikbaar vanaf \d{2}-\d{2}-\d{2})')
@@ -727,38 +727,38 @@ def scrape_ikwilhuren():
     distance_suffix_pattern = re.compile(r'\s*-\s*\d+\s?Km\.?$')
 
     def try_select_city(page):
-        container = page.locator("#select2-selAdres-container")
-        container.click()
-        page.wait_for_timeout(800)
-
-        search_field = page.locator(".select2-search__field")
-        if search_field.count() == 0:
-            return False
-
-        search_field.first.fill(city_query)
-        page.wait_for_timeout(2000)
-
-        options = page.locator(".select2-results__option")
-        option_count = options.count()
-        if option_count == 0:
-            return False
-
-        chosen_index = 0
-        for i in range(option_count):
-            try:
-                if "gravenhage" in options.nth(i).inner_text().lower():
-                    chosen_index = i
-                    break
-            except Exception:
-                continue
-
-        for _ in range(chosen_index):
-            search_field.first.press("ArrowDown")
-            page.wait_for_timeout(150)
-        search_field.first.press("Enter")
-        page.wait_for_timeout(1500)
-
         try:
+            container = page.locator("#select2-selAdres-container")
+            container.click(timeout=15000)
+            page.wait_for_timeout(800)
+
+            search_field = page.locator(".select2-search__field")
+            if search_field.count() == 0:
+                return False
+
+            search_field.first.fill(city_query)
+            page.wait_for_timeout(2500)  # a bit more slack for slower AJAX in CI
+
+            options = page.locator(".select2-results__option")
+            option_count = options.count()
+            if option_count == 0:
+                return False
+
+            chosen_index = 0
+            for i in range(option_count):
+                try:
+                    if "gravenhage" in options.nth(i).inner_text().lower():
+                        chosen_index = i
+                        break
+                except Exception:
+                    continue
+
+            for _ in range(chosen_index):
+                search_field.first.press("ArrowDown")
+                page.wait_for_timeout(150)
+            search_field.first.press("Enter")
+            page.wait_for_timeout(1500)
+
             underlying_value = page.locator("#selAdres").input_value()
             displayed_text = page.locator("#select2-selAdres-container").inner_text()
             if underlying_value or "gravenhage" in displayed_text.lower():
@@ -847,18 +847,21 @@ def scrape_ikwilhuren():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
         page.goto(url, wait_until="networkidle", timeout=30000)
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(3500)  # extra settle time - cloud runners can be slower to finish rendering
         dismiss_cookie_banner(page)
+        page.wait_for_timeout(500)
 
         success = False
         for attempt in range(1, max_select_attempts + 1):
             print(f"  Selecting city (attempt {attempt}/{max_select_attempts})...")
             if try_select_city(page):
+                print("    Success.")
                 success = True
                 break
+            print("    Didn't stick, retrying...")
 
         if not success:
-            print("  Could not select the city filter after multiple attempts.")
+            print("  Could not select the city filter after multiple attempts. Skipping this site.")
             browser.close()
             return []
 
