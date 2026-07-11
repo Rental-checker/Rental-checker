@@ -1,0 +1,44 @@
+name: Check rentals
+
+on:
+  schedule:
+    # Every 8 hours. Change the cron expression to adjust frequency.
+    # Format: minute hour day month weekday (all in UTC)
+    - cron: "0 */4 * * *"
+  workflow_dispatch: {}  # lets you trigger a run manually from the Actions tab
+
+permissions:
+  contents: write  # needed so the workflow can commit the report + seen-state back to the repo
+
+jobs:
+  check-rentals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 playwright
+          playwright install --with-deps chromium
+
+      - name: Run the rental checker
+        run: python check_all_rentals.py
+
+      - name: Publish report to GitHub Pages folder
+        run: |
+          mkdir -p docs
+          cp report_all_rentals.html docs/index.html
+
+      - name: Commit updated report and seen-state
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update rental report"
+          file_pattern: "docs/index.html seen_all_rentals.json"
