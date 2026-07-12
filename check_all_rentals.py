@@ -29,7 +29,7 @@ Run this periodically (e.g. once or twice a day) via cron / Task Scheduler.
 import json
 import re
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 from bs4 import BeautifulSoup
@@ -915,17 +915,45 @@ def save_seen(seen):
     SEEN_FILE.write_text(json.dumps(seen, indent=2, ensure_ascii=False))
 
 
-def build_html(matches, new_keys, checked_at):
+def build_html(matches, checked_at):
+    now = datetime.now()
+
+    def badge_tier(listing):
+        """Returns 'new' (<24h), 'recent' (24-48h), or None (older), based on
+        how long ago this listing was first seen - not just whether it was
+        found in this specific run, so the badge survives multiple runs."""
+        first_seen = listing.get("first_seen")
+        if not first_seen:
+            return None
+        try:
+            first_seen_dt = datetime.strptime(first_seen, "%Y-%m-%d %H:%M")
+        except ValueError:
+            return None
+        age = now - first_seen_dt
+        if age < timedelta(days=1):
+            return "new"
+        elif age < timedelta(days=2):
+            return "recent"
+        return None
+
     def row(listing, show_source=False):
-        is_new = seen_key(listing) in new_keys
-        badge = '<span class="new-badge">NIEUW</span>' if is_new else ""
+        tier = badge_tier(listing)
+        if tier == "new":
+            badge = '<span class="new-badge">NIEUW</span>'
+            row_class = "is-new"
+        elif tier == "recent":
+            badge = '<span class="recent-badge">NIEUW</span>'
+            row_class = "is-recent"
+        else:
+            badge = ""
+            row_class = ""
         size = f'{listing["size"]} m²' if listing.get("size") else "–"
         rooms = f'{listing["rooms"]}' if listing.get("rooms") is not None else "–"
         price_str = format_price(listing["price"])
         source_cell = f"<td data-source=\"{listing['source']}\"><span class=\"source-badge\">{listing['source']}</span></td>" if show_source else ""
         added = listing.get("first_seen", checked_at)
         return f"""
-        <tr class="{'is-new' if is_new else ''}"
+        <tr class="{row_class}"
             data-location="{listing['location']}"
             data-price="{listing['price']}"
             data-size="{listing.get('size') if listing.get('size') is not None else ''}"
@@ -970,6 +998,17 @@ def build_html(matches, new_keys, checked_at):
     for l in matches:
         by_source.setdefault(l["source"], []).append(l)
 
+    new_count = sum(1 for l in matches if badge_tier(l) == "new")
+    recent_count = sum(1 for l in matches if badge_tier(l) == "recent")
+    meta_extra = ""
+    if new_count or recent_count:
+        parts = []
+        if new_count:
+            parts.append(f"{new_count} nieuw (laatste 24u)")
+        if recent_count:
+            parts.append(f"{recent_count} recent (1-2 dagen)")
+        meta_extra = ", waarvan " + " & ".join(parts)
+
     tab_buttons = ['<button class="tab-btn active" onclick="showTab(\'all\', this)">All ({0})</button>'.format(len(matches))]
     tab_panels = [f'<div class="tab-panel active" id="tab-all">{table(matches, show_source=True)}</div>']
 
@@ -1003,7 +1042,9 @@ def build_html(matches, new_keys, checked_at):
   th.sortable[data-asc="1"]::after {{ content: '↑'; color: #33437a; }}
   th.sortable[data-asc="0"]::after {{ content: '↓'; color: #33437a; }}
   tr.is-new {{ background: #eefbf0; }}
+  tr.is-recent {{ background: #fffbea; }}
   .new-badge {{ background: #1aa251; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }}
+  .recent-badge {{ background: #e0a800; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }}
   .source-badge {{ background: #eef1fb; color: #33437a; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 10px; white-space: nowrap; }}
   a {{ color: #0a5cd8; text-decoration: none; }}
   a:hover {{ text-decoration: underline; }}
@@ -1012,7 +1053,7 @@ def build_html(matches, new_keys, checked_at):
 </head>
 <body>
   <h1>Alle huurwoningen onder €{MAX_PRICE}</h1>
-  <div class="meta">Laatst gecontroleerd: {checked_at} &middot; {len(matches)} match(es){f", waarvan {len(new_keys)} nieuw" if new_keys else ""}</div>
+  <div class="meta">Laatst gecontroleerd: {checked_at} &middot; {len(matches)} match(es){meta_extra}</div>
   <div class="tabs">
     {"".join(tab_buttons)}
   </div>
@@ -1093,7 +1134,7 @@ def main():
         }
     save_seen(seen)
 
-    html = build_html(all_listings, new_keys, checked_at)
+    html = build_html(all_listings, checked_at)
     REPORT_FILE.write_text(html, encoding="utf-8")
     print(f"Report written to {REPORT_FILE}")
     if new_keys:
