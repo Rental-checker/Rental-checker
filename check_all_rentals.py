@@ -188,25 +188,12 @@ def scrape_benhousing():
 # LIV RESIDENTIAL (livresidential.nl) - Den Haag
 # ========================================================================
 def scrape_livresidential():
-    url = "https://livresidential.nl/huurwoningen/den-haag"
-    city_keywords = ["den haag", "'s-gravenhage", "s-gravenhage", "gravenhage"]
-
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="networkidle", timeout=30000)
-        page.wait_for_timeout(3000)
-        dismiss_cookie_banner(page)
-        click_load_more_until_gone(page)
-        html = page.content()
-        browser.close()
-    soup = BeautifulSoup(html, "html.parser")
-
-    listings = {}
-    candidate_links = [
-        a for a in soup.find_all("a", href=True)
-        if "/huurwoningen/" in a["href"] and a["href"].rstrip("/") != url.rstrip("/")
+    city_pages = [
+        "https://livresidential.nl/huurwoningen/den-haag",
+        "https://livresidential.nl/huurwoningen/rotterdam",
+        "https://livresidential.nl/huurwoningen/delft",
     ]
+    city_keywords = ["den haag", "'s-gravenhage", "s-gravenhage", "gravenhage", "rotterdam", "delft"]
 
     pattern = re.compile(
         r'(\d{4}\s?[A-Z]{2})\s+([A-Za-zÀ-ÿ\'\-\s]+?)\s+\1\s+\2\s+€\s?([\d.,]+)\s*per maand\s*\((incl|excl)\.?\)\s*(\d+)\s?m\s?2\s*(\d+(?:\.\d+)?)\s?kamers?',
@@ -215,44 +202,65 @@ def scrape_livresidential():
     NOT_AVAILABLE_STATUSES = {"Onder optie", "Verhuurd"}
     status_pattern = re.compile(r'^(Onder optie|Verhuurd|Beschikbaar vanaf \d{2}-\d{2}-\d{4}|Direct beschikbaar)\s*')
 
-    for a in candidate_links:
-        href = a["href"]
-        if href in listings:
-            continue
-        text = a.get_text(" ", strip=True)
-        m = pattern.search(text)
-        if not m:
-            continue
+    def parse_city_page(soup, page_url):
+        found = {}
+        candidate_links = [
+            a for a in soup.find_all("a", href=True)
+            if "/huurwoningen/" in a["href"] and a["href"].rstrip("/") != page_url.rstrip("/")
+        ]
 
-        status_m = status_pattern.match(text)
-        if status_m:
-            if status_m.group(1) in NOT_AVAILABLE_STATUSES:
+        for a in candidate_links:
+            href = a["href"]
+            if href in found:
                 continue
-            addr_start = status_m.end()
-        else:
-            addr_start = 0
-        address = text[addr_start:m.start()].strip()
+            text = a.get_text(" ", strip=True)
+            m = pattern.search(text)
+            if not m:
+                continue
 
-        postcode, city = m.group(1), m.group(2)
-        if not any(kw in city.lower() for kw in city_keywords):
-            continue
-        try:
-            price = int(m.group(3).replace(".", "").replace(",", ""))
-        except ValueError:
-            price = None
-        if price is None or price > MAX_PRICE:
-            continue
-        size = int(m.group(5))
-        rooms = float(m.group(6))
-        rooms = int(rooms) if rooms.is_integer() else rooms
+            status_m = status_pattern.match(text)
+            if status_m:
+                if status_m.group(1) in NOT_AVAILABLE_STATUSES:
+                    continue
+                addr_start = status_m.end()
+            else:
+                addr_start = 0
+            address = text[addr_start:m.start()].strip()
 
-        full_href = href if href.startswith("http") else f"https://livresidential.nl{href}"
-        listings[href] = {
-            "source": "LIV Residential", "title": address, "href": full_href,
-            "location": f"{postcode} {city}", "price": price, "size": size, "rooms": rooms, "extra": "",
-        }
+            postcode, city = m.group(1), m.group(2)
+            if not any(kw in city.lower() for kw in city_keywords):
+                continue
+            try:
+                price = int(m.group(3).replace(".", "").replace(",", ""))
+            except ValueError:
+                price = None
+            if price is None or price > MAX_PRICE:
+                continue
+            size = int(m.group(5))
+            rooms = float(m.group(6))
+            rooms = int(rooms) if rooms.is_integer() else rooms
 
-    return list(listings.values())
+            full_href = href if href.startswith("http") else f"https://livresidential.nl{href}"
+            found[href] = {
+                "source": "LIV Residential", "title": address, "href": full_href,
+                "location": f"{postcode} {city}", "price": price, "size": size, "rooms": rooms, "extra": "",
+            }
+        return found
+
+    all_listings = {}
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+        for url in city_pages:
+            page.goto(url, wait_until="networkidle", timeout=30000)
+            page.wait_for_timeout(3000)
+            dismiss_cookie_banner(page)
+            click_load_more_until_gone(page)
+            soup = BeautifulSoup(page.content(), "html.parser")
+            all_listings.update(parse_city_page(soup, url))
+        browser.close()
+
+    return list(all_listings.values())
 
 
 # ========================================================================
@@ -709,11 +717,15 @@ def scrape_vanweelde():
 
 
 # ========================================================================
-# IKWILHUREN.NU - Den Haag (using the site's own location filter)
+# IKWILHUREN.NU - Den Haag / Delft / Rotterdam (using the site's own location filter)
 # ========================================================================
 def scrape_ikwilhuren():
     url = "https://ikwilhuren.nu/aanbod/"
-    city_query = "'s-Gravenhage, Zuid-Holland"
+    city_queries = [
+        ("'s-Gravenhage, Zuid-Holland", "gravenhage"),
+        ("Delft, Zuid-Holland", "delft"),
+        ("Rotterdam, Zuid-Holland", "rotterdam"),
+    ]
     max_select_attempts = 5
     max_pages_safety_cap = 20
 
@@ -726,7 +738,7 @@ def scrape_ikwilhuren():
     rooms_pattern = re.compile(r'(\d+)\s?slaapkamer')
     distance_suffix_pattern = re.compile(r'\s*-\s*\d+\s?Km\.?$')
 
-    def try_select_city(page):
+    def try_select_city(page, city_query, match_keyword):
         try:
             container = page.locator("#select2-selAdres-container")
             container.click(timeout=15000)
@@ -747,7 +759,7 @@ def scrape_ikwilhuren():
             chosen_index = 0
             for i in range(option_count):
                 try:
-                    if "gravenhage" in options.nth(i).inner_text().lower():
+                    if match_keyword in options.nth(i).inner_text().lower():
                         chosen_index = i
                         break
                 except Exception:
@@ -761,7 +773,7 @@ def scrape_ikwilhuren():
 
             underlying_value = page.locator("#selAdres").input_value()
             displayed_text = page.locator("#select2-selAdres-container").inner_text()
-            if underlying_value or "gravenhage" in displayed_text.lower():
+            if underlying_value or match_keyword in displayed_text.lower():
                 return True
         except Exception:
             pass
@@ -843,9 +855,7 @@ def scrape_ikwilhuren():
             l.pop("_has_real_title", None)
         return found
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+    def fetch_for_city(page, city_query, match_keyword):
         page.goto(url, wait_until="networkidle", timeout=30000)
         page.wait_for_timeout(3500)  # extra settle time - cloud runners can be slower to finish rendering
         dismiss_cookie_banner(page)
@@ -853,17 +863,16 @@ def scrape_ikwilhuren():
 
         success = False
         for attempt in range(1, max_select_attempts + 1):
-            print(f"  Selecting city (attempt {attempt}/{max_select_attempts})...")
-            if try_select_city(page):
-                print("    Success.")
+            print(f"    Selecting '{city_query}' (attempt {attempt}/{max_select_attempts})...")
+            if try_select_city(page, city_query, match_keyword):
+                print("      Success.")
                 success = True
                 break
-            print("    Didn't stick, retrying...")
+            print("      Didn't stick, retrying...")
 
         if not success:
-            print("  Could not select the city filter after multiple attempts. Skipping this site.")
-            browser.close()
-            return []
+            print(f"    Could not select '{city_query}' after multiple attempts. Skipping this city.")
+            return {}
 
         try:
             toon_btn = page.get_by_text("Toon resultaten", exact=False)
@@ -873,8 +882,8 @@ def scrape_ikwilhuren():
         except Exception:
             pass
 
-        all_listings = {}
-        all_listings.update(parse_page(BeautifulSoup(page.content(), "html.parser")))
+        city_listings = {}
+        city_listings.update(parse_page(BeautifulSoup(page.content(), "html.parser")))
 
         page_num = 1
         while page_num < max_pages_safety_cap:
@@ -887,12 +896,21 @@ def scrape_ikwilhuren():
             except Exception:
                 break
             new_listings = parse_page(BeautifulSoup(page.content(), "html.parser"))
-            before = len(all_listings)
-            all_listings.update(new_listings)
+            before = len(city_listings)
+            city_listings.update(new_listings)
             page_num += 1
-            if len(all_listings) - before == 0:
+            if len(city_listings) - before == 0:
                 break
 
+        return city_listings
+
+    all_listings = {}
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+        for city_query, match_keyword in city_queries:
+            print(f"  Checking '{city_query}'...")
+            all_listings.update(fetch_for_city(page, city_query, match_keyword))
         browser.close()
 
     return list(all_listings.values())
