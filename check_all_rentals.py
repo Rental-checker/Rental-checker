@@ -120,7 +120,8 @@ def scrape_benhousing():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="networkidle", timeout=30000)
+        page.goto(url, wait_until="load", timeout=45000)
+        page.wait_for_timeout(2000)
         click_load_more_until_gone(page, ["Laad meer"])
         html = page.content()
         browser.close()
@@ -252,12 +253,15 @@ def scrape_livresidential():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
         for url in city_pages:
-            page.goto(url, wait_until="networkidle", timeout=30000)
-            page.wait_for_timeout(3000)
-            dismiss_cookie_banner(page)
-            click_load_more_until_gone(page)
-            soup = BeautifulSoup(page.content(), "html.parser")
-            all_listings.update(parse_city_page(soup, url))
+            try:
+                page.goto(url, wait_until="load", timeout=45000)
+                page.wait_for_timeout(3000)
+                dismiss_cookie_banner(page)
+                click_load_more_until_gone(page)
+                soup = BeautifulSoup(page.content(), "html.parser")
+                all_listings.update(parse_city_page(soup, url))
+            except Exception as e:
+                print(f"    Error checking {url}: {e} - skipping this city, keeping results from others.")
         browser.close()
 
     return list(all_listings.values())
@@ -371,7 +375,7 @@ def scrape_oudedelft():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="networkidle", timeout=30000)
+        page.goto(url, wait_until="load", timeout=45000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         for _ in range(5):
@@ -479,7 +483,7 @@ def scrape_rentvalley():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="networkidle", timeout=30000)
+        page.goto(url, wait_until="load", timeout=45000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         click_load_more_until_gone(page)
@@ -510,7 +514,7 @@ def scrape_rentvalley():
         # Enrich matches with Type/Rooms/Living surface from each detail page
         for listing in listings.values():
             try:
-                page.goto(listing["href"], wait_until="networkidle", timeout=20000)
+                page.goto(listing["href"], wait_until="load", timeout=30000)
                 page.wait_for_timeout(1000)
                 detail_text = page.inner_text("body")
             except Exception:
@@ -592,7 +596,7 @@ def scrape_verra():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="networkidle", timeout=30000)
+        page.goto(url, wait_until="load", timeout=45000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         page.wait_for_timeout(2000)
@@ -856,7 +860,7 @@ def scrape_ikwilhuren():
         return found
 
     def fetch_for_city(page, city_query, match_keyword):
-        page.goto(url, wait_until="networkidle", timeout=30000)
+        page.goto(url, wait_until="load", timeout=45000)
         page.wait_for_timeout(3500)  # extra settle time - cloud runners can be slower to finish rendering
         dismiss_cookie_banner(page)
         page.wait_for_timeout(500)
@@ -910,7 +914,10 @@ def scrape_ikwilhuren():
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
         for city_query, match_keyword in city_queries:
             print(f"  Checking '{city_query}'...")
-            all_listings.update(fetch_for_city(page, city_query, match_keyword))
+            try:
+                all_listings.update(fetch_for_city(page, city_query, match_keyword))
+            except Exception as e:
+                print(f"    Error checking '{city_query}': {e} - skipping this city, keeping results from others.")
         browser.close()
 
     return list(all_listings.values())
