@@ -860,6 +860,10 @@ def scrape_ikwilhuren():
         return found
 
     def fetch_for_city(page, city_query, match_keyword):
+        """Returns (success, listings). success=False means city selection
+        itself failed after all inner attempts (as opposed to succeeding
+        but genuinely finding 0 listings) - the caller uses this to decide
+        whether a full browser restart is worth trying."""
         page.goto(url, wait_until="load", timeout=45000)
         page.wait_for_timeout(3500)  # extra settle time - cloud runners can be slower to finish rendering
         dismiss_cookie_banner(page)
@@ -875,8 +879,7 @@ def scrape_ikwilhuren():
             print("      Didn't stick, retrying...")
 
         if not success:
-            print(f"    Could not select '{city_query}' after multiple attempts. Skipping this city.")
-            return {}
+            return False, {}
 
         try:
             toon_btn = page.get_by_text("Toon resultaten", exact=False)
@@ -906,19 +909,34 @@ def scrape_ikwilhuren():
             if len(city_listings) - before == 0:
                 break
 
-        return city_listings
+        return True, city_listings
+
+    max_browser_restarts = 2  # if all 5 inner select attempts fail, try again with a completely fresh browser
 
     all_listings = {}
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        for city_query, match_keyword in city_queries:
-            print(f"  Checking '{city_query}'...")
+    for city_query, match_keyword in city_queries:
+        print(f"  Checking '{city_query}'...")
+        succeeded = False
+        for restart_num in range(1, max_browser_restarts + 1):
+            if restart_num > 1:
+                print(f"    Restarting with a fresh browser (attempt {restart_num}/{max_browser_restarts})...")
             try:
-                all_listings.update(fetch_for_city(page, city_query, match_keyword))
+                with sync_playwright() as p:
+                    browser = p.chromium.launch(headless=True)
+                    page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+                    success, city_listings = fetch_for_city(page, city_query, match_keyword)
+                    browser.close()
             except Exception as e:
-                print(f"    Error checking '{city_query}': {e} - skipping this city, keeping results from others.")
-        browser.close()
+                print(f"    Error during browser session: {e}")
+                success, city_listings = False, {}
+
+            if success:
+                all_listings.update(city_listings)
+                succeeded = True
+                break
+
+        if not succeeded:
+            print(f"    Could not select '{city_query}' even after {max_browser_restarts} fresh browser attempt(s). Skipping this city.")
 
     return list(all_listings.values())
 
