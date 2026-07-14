@@ -28,6 +28,7 @@ Run this periodically (e.g. once or twice a day) via cron / Task Scheduler.
 
 import json
 import re
+import time
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -120,7 +121,7 @@ def scrape_benhousing():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="load", timeout=45000)
+        page.goto(url, wait_until="load", timeout=60000)
         page.wait_for_timeout(2000)
         click_load_more_until_gone(page, ["Laad meer"])
         html = page.content()
@@ -254,7 +255,7 @@ def scrape_livresidential():
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
         for url in city_pages:
             try:
-                page.goto(url, wait_until="load", timeout=45000)
+                page.goto(url, wait_until="load", timeout=60000)
                 page.wait_for_timeout(3000)
                 dismiss_cookie_banner(page)
                 click_load_more_until_gone(page)
@@ -375,7 +376,7 @@ def scrape_oudedelft():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="load", timeout=45000)
+        page.goto(url, wait_until="load", timeout=60000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         for _ in range(5):
@@ -483,7 +484,7 @@ def scrape_rentvalley():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="load", timeout=45000)
+        page.goto(url, wait_until="load", timeout=60000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         click_load_more_until_gone(page)
@@ -514,7 +515,7 @@ def scrape_rentvalley():
         # Enrich matches with Type/Rooms/Living surface from each detail page
         for listing in listings.values():
             try:
-                page.goto(listing["href"], wait_until="load", timeout=30000)
+                page.goto(listing["href"], wait_until="load", timeout=45000)
                 page.wait_for_timeout(1000)
                 detail_text = page.inner_text("body")
             except Exception:
@@ -596,7 +597,7 @@ def scrape_verra():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
-        page.goto(url, wait_until="load", timeout=45000)
+        page.goto(url, wait_until="load", timeout=60000)
         page.wait_for_timeout(3000)
         dismiss_cookie_banner(page)
         page.wait_for_timeout(2000)
@@ -864,7 +865,7 @@ def scrape_ikwilhuren():
         itself failed after all inner attempts (as opposed to succeeding
         but genuinely finding 0 listings) - the caller uses this to decide
         whether a full browser restart is worth trying."""
-        page.goto(url, wait_until="load", timeout=45000)
+        page.goto(url, wait_until="load", timeout=60000)
         page.wait_for_timeout(3500)  # extra settle time - cloud runners can be slower to finish rendering
         dismiss_cookie_banner(page)
         page.wait_for_timeout(500)
@@ -919,7 +920,9 @@ def scrape_ikwilhuren():
         succeeded = False
         for restart_num in range(1, max_browser_restarts + 1):
             if restart_num > 1:
-                print(f"    Restarting with a fresh browser (attempt {restart_num}/{max_browser_restarts})...")
+                pause_seconds = 20
+                print(f"    Pausing {pause_seconds}s before restarting with a fresh browser (attempt {restart_num}/{max_browser_restarts})...")
+                time.sleep(pause_seconds)
             try:
                 with sync_playwright() as p:
                     browser = p.chromium.launch(headless=True)
