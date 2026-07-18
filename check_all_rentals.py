@@ -945,6 +945,258 @@ def scrape_ikwilhuren():
 
 
 # ========================================================================
+# 070 WONEN (070wonen.nl) - Den Haag area
+# ========================================================================
+def scrape_070wonen():
+    url = f"https://070wonen.nl/?action=epl_search&post_type=rental&property_status=&property_location=&property_price_from=&property_price_to={MAX_PRICE}"
+    headers = {"User-Agent": "Mozilla/5.0 (personal rental-search script; contact: none)"}
+
+    detail_href_pattern = re.compile(r'^https://070wonen\.nl/huurwoningen/[a-z0-9\-]+/[a-z0-9\-]+/?$')
+    price_pattern = re.compile(r'€\s?([\d.,]+)\s*/\s*[Mm]aand')
+    size_pattern = re.compile(r'(\d+)\s?m2')
+    rooms_pattern = re.compile(r'(\d+)\s?slaapkamer')
+    availability_pattern = re.compile(r'(Per direct|Vanaf \d{2}-\d{2}-\d{4})')
+    furnished_pattern = re.compile(r'\b(Gestoffeerd|Gemeubileerd|Kaal)\b')
+    not_available_pattern = re.compile(r'\b(Onder optie|Verkocht|Verhuurd)\b')
+
+    resp = requests.get(url, headers=headers, timeout=20)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    listings = {}
+    by_href = {}
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if detail_href_pattern.match(href):
+            by_href.setdefault(href, []).append(a)
+
+    for href, anchors in by_href.items():
+        if href in listings:
+            continue
+
+        title = href.rstrip("/").rsplit("/", 1)[-1].replace("-", " ").title()
+        for a in anchors:
+            t = a.get_text(strip=True)
+            if t and t.lower() != "meer informatie":
+                title = t
+                break
+
+        container = anchors[0]
+        container_text = ""
+        for _ in range(8):
+            container = container.parent
+            if container is None:
+                break
+            container_text = container.get_text(" ", strip=True)
+            if "/maand" in container_text.lower():
+                break
+        if "/maand" not in container_text.lower():
+            continue
+
+        card = anchors[0].find_parent(["article", "li"])
+        status_text = card.get_text(" ", strip=True) if card is not None else container_text
+        if not_available_pattern.search(status_text):
+            continue
+
+        price_match = price_pattern.search(container_text)
+        if not price_match:
+            continue
+        price = parse_euro_amount(price_match.group(1))
+        if price is None or price > MAX_PRICE:
+            continue
+
+        size_match = size_pattern.search(container_text)
+        rooms_match = rooms_pattern.search(container_text)
+        availability_match = availability_pattern.search(container_text)
+        furnished_matches = furnished_pattern.findall(container_text)
+
+        listings[href] = {
+            "source": "070 Wonen", "title": title, "href": href,
+            "location": "'s-Gravenhage", "price": price,
+            "size": int(size_match.group(1)) if size_match else None,
+            "rooms": int(rooms_match.group(1)) if rooms_match else None,
+            "extra": ", ".join(dict.fromkeys(furnished_matches)) +
+                     (f" · {availability_match.group(1)}" if availability_match else ""),
+        }
+
+    return list(listings.values())
+
+
+# ========================================================================
+# HEKKING NVM (hekking.nl) - Den Haag / Delft / Rotterdam
+# ========================================================================
+def scrape_hekking():
+    url = "https://www.hekking.nl/en/listings/rental?salesRentals=rentals"
+    city_slugs = {"rotterdam", "delft", "den-haag"}
+
+    href_pattern = re.compile(r'^/en/listings/([a-z\-]+)/([a-z0-9\-]+)/([a-f0-9]+)/?$')
+    price_pattern = re.compile(r'€\s?([\d.,]+)\s*p\.m\.\s*(?:ex|incl)\.?', re.IGNORECASE)
+    furnished_pattern = re.compile(r'(Fully furnished|Partly furnished|Unfurnished|Decorated|Shell)', re.IGNORECASE)
+    availability_pattern = re.compile(r'(Directly|In consultation|\d{2}-\d{2}-\d{4})', re.IGNORECASE)
+    not_available_pattern = re.compile(r'\b(Rented|Under offer|Under bid|Sold)\b', re.IGNORECASE)
+
+    def extract_from_soup(soup):
+        found = {}
+        by_href = {}
+        for a in soup.find_all("a", href=True):
+            href = a["href"]
+            m = href_pattern.match(href)
+            if not m or m.group(1) not in city_slugs:
+                continue
+            by_href.setdefault(href, []).append(a)
+
+        for href, anchors in by_href.items():
+            m = href_pattern.match(href)
+            city_slug = m.group(1)
+            listing_slug = m.group(2)
+            city_display = city_slug.replace("-", " ").title()
+
+            texts = [a.get_text(" ", strip=True) for a in anchors]
+            title = None
+            for t in texts:
+                if t and not not_available_pattern.fullmatch(t.strip()):
+                    title = t
+                    break
+            if title is None:
+                title = listing_slug.replace("-", " ").title()
+
+            card = anchors[0].find_parent(["article", "li"])
+            if card is not None:
+                container_text = card.get_text(" ", strip=True)
+            else:
+                container = anchors[0]
+                container_text = ""
+                for _ in range(8):
+                    container = container.parent
+                    if container is None:
+                        break
+                    container_text = container.get_text(" ", strip=True)
+                    if "p.m." in container_text.lower():
+                        break
+            if "p.m." not in container_text.lower():
+                continue
+
+            if not_available_pattern.search(container_text):
+                continue
+
+            price_m = price_pattern.search(container_text)
+            if not price_m:
+                continue
+            price = parse_euro_amount(price_m.group(1))
+            if price is None or price > MAX_PRICE:
+                continue
+
+            rest = container_text[price_m.end():]
+            bedrooms_m = re.match(r'\s*(\d+)\b', rest)
+            furnished_m = furnished_pattern.search(container_text)
+            availability_m = availability_pattern.search(container_text)
+
+            extra_parts = [p for p in [
+                furnished_m.group(1) if furnished_m else "",
+                availability_m.group(1) if availability_m else "",
+            ] if p]
+
+            found[href] = {
+                "source": "Hekking NVM", "title": title,
+                "href": f"https://www.hekking.nl{href}", "location": city_display,
+                "price": price, "size": None,
+                "rooms": int(bedrooms_m.group(1)) if bedrooms_m else None,
+                "extra": " · ".join(extra_parts),
+            }
+        return found
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+
+        # Cold direct loads to this URL render the Dutch blog page instead of
+        # the listings, despite the URL bar showing the right address -
+        # visiting the homepage first "warms up" the session enough for the
+        # direct navigation afterward to actually work.
+        page.goto("https://www.hekking.nl/", wait_until="load", timeout=60000)
+        page.wait_for_timeout(3000)
+        dismiss_cookie_banner(page)
+
+        if "/nl" in page.url:
+            try:
+                en_link = page.get_by_text("EN", exact=True)
+                if en_link.count() > 0 and en_link.first.is_visible():
+                    en_link.first.click()
+                    page.wait_for_timeout(2000)
+            except Exception:
+                pass
+
+        page.goto(url, wait_until="load", timeout=60000)
+        page.wait_for_timeout(3000)
+
+        all_listings = extract_from_soup(BeautifulSoup(page.content(), "html.parser"))
+        browser.close()
+
+    return list(all_listings.values())
+
+
+# ========================================================================
+# NRW WONEN (nrw-wonen.nl) - all locations
+# ========================================================================
+def scrape_nrwwonen():
+    url = "https://nrw-wonen.nl/huur-aanbod/"
+    detail_href_pattern = re.compile(r'^/aanbod/huis/\d+/?$')
+
+    # Entire listing is packed into one anchor's text:
+    # "{address} {status} {postcode} {city} € {price},= p/m {rooms} {bathrooms} {size}"
+    listing_pattern = re.compile(
+        r'^(.*?)\s*\b(te huur|on hold|bezichtiging vol)\b\s*'
+        r'(\d{4}\s?[A-Z]{2})\s+([A-Za-zÀ-ÿ\'\-\s]+?)\s*'
+        r'€\s?([\d.,]+),=\s*p/m\s*'
+        r'(\d+)\s+(\d+)\s+(\d+)',
+        re.IGNORECASE
+    )
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent="Mozilla/5.0 (personal rental-search script; contact: none)")
+        page.goto(url, wait_until="load", timeout=60000)
+        page.wait_for_timeout(3000)
+        dismiss_cookie_banner(page)
+        click_load_more_until_gone(page, ["Laad meer", "Meer laden", "Toon meer"])
+        html = page.content()
+        browser.close()
+
+    soup = BeautifulSoup(html, "html.parser")
+    listings = {}
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if not detail_href_pattern.match(href) or href in listings:
+            continue
+
+        text = a.get_text(" ", strip=True)
+        m = listing_pattern.match(text)
+        if not m:
+            continue
+
+        address = m.group(1).strip()
+        status = m.group(2).strip().lower()
+        if status != "te huur":
+            continue  # excludes "on hold" and "bezichtiging vol"
+
+        postcode = m.group(3)
+        city = m.group(4).strip()
+        price = parse_euro_amount(m.group(5))
+        if price is None or price > MAX_PRICE:
+            continue
+
+        rooms = int(m.group(6))
+        size = int(m.group(8))
+
+        listings[href] = {
+            "source": "NRW Wonen", "title": address, "href": f"https://nrw-wonen.nl{href}",
+            "location": f"{postcode} {city}", "price": price, "size": size, "rooms": rooms, "extra": "",
+        }
+
+    return list(listings.values())
+
+
+# ========================================================================
 # Seen-tracking, report building, main
 # ========================================================================
 def seen_key(listing):
@@ -1039,7 +1291,8 @@ def build_html(matches, checked_at):
 
     # Group matches by source, preserving a sensible fixed order
     source_order = ["Ben Housing", "LIV Residential", "Rental Rotterdam", "Oude Delft", "Rent Valley",
-                    "Verra Makelaars", "Van Weelde Vastgoed", "ikwilhuren.nu"]
+                    "Verra Makelaars", "Van Weelde Vastgoed", "ikwilhuren.nu", "070 Wonen", "Hekking NVM",
+                    "NRW Wonen"]
     by_source = {s: [] for s in source_order}
     for l in matches:
         by_source.setdefault(l["source"], []).append(l)
@@ -1152,6 +1405,9 @@ def main():
         ("Verra Makelaars", scrape_verra),
         ("Van Weelde Vastgoed", scrape_vanweelde),
         ("ikwilhuren.nu", scrape_ikwilhuren),
+        ("070 Wonen", scrape_070wonen),
+        ("Hekking NVM", scrape_hekking),
+        ("NRW Wonen", scrape_nrwwonen),
     ]
 
     for name, scraper_fn in scrapers:
