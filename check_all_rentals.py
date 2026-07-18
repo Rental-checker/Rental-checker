@@ -1197,6 +1197,99 @@ def scrape_nrwwonen():
 
 
 # ========================================================================
+# TOUW VASTGOED (touwvastgoed.nl) - excludes Schiedam Centrum / Bergschenhoek
+# ========================================================================
+def scrape_touwvastgoed():
+    url = "https://touwvastgoed.nl/aanbod/"
+    headers = {"User-Agent": "Mozilla/5.0 (personal rental-search script; contact: none)"}
+    excluded_neighbourhood_keywords = ["schiedam", "bergschenhoek"]
+
+    nav_slugs = {
+        "", "aanbod", "huren", "verhuren", "vastgoedbeheer", "contact",
+        "maak-kennis-met-de-de-meest-betrouwbare-verhuurmakelaar-van-rotterdam",
+    }
+    detail_href_pattern = re.compile(r'^https://touwvastgoed\.nl/([a-z0-9\-]+)/?$')
+    size_pattern = re.compile(r'(\d+)\s?m2', re.IGNORECASE)
+    rooms_pattern = re.compile(r'(\d+)\s+kamers?\b', re.IGNORECASE)
+    bedrooms_pattern = re.compile(r'(\d+)\s+slaapkamers?\b', re.IGNORECASE)
+    price_pattern = re.compile(r'€\s?([\d.,]+)')
+
+    def is_listing_href(href):
+        m = detail_href_pattern.match(href)
+        return bool(m) and m.group(1) not in nav_slugs
+
+    resp = requests.get(url, headers=headers, timeout=20)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    listings = {}
+    by_href = {}
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if is_listing_href(href):
+            by_href.setdefault(href, []).append(a)
+
+    for href, anchors in by_href.items():
+        if href in listings:
+            continue
+
+        title = href.rstrip("/").rsplit("/", 1)[-1].replace("-", " ").title()
+        for a in anchors:
+            t = a.get_text(strip=True)
+            if t and t.lower() != "lees meer":
+                title = t
+                break
+
+        card = anchors[0].find_parent(["article", "li"])
+        if card is not None:
+            container_text = card.get_text(" ", strip=True)
+        else:
+            container = anchors[0]
+            container_text = ""
+            for _ in range(8):
+                container = container.parent
+                if container is None:
+                    break
+                container_text = container.get_text(" ", strip=True)
+                if "kamers" in container_text.lower():
+                    break
+
+        if "verhuurd" in container_text.lower():
+            continue  # rented
+
+        price_match = price_pattern.search(container_text)
+        if not price_match:
+            continue
+        price = parse_euro_amount(price_match.group(1))
+        if price is None or price > MAX_PRICE:
+            continue
+
+        neighbourhood = ""
+        size_match = size_pattern.search(container_text)
+        if size_match:
+            before_size = container_text[:size_match.start()]
+            neighbourhood = before_size.split("|", 1)[0].strip()
+            if title and neighbourhood.lower().startswith(title.lower()):
+                neighbourhood = neighbourhood[len(title):].strip()
+
+        if any(kw in neighbourhood.lower() for kw in excluded_neighbourhood_keywords):
+            continue
+
+        rooms_match = rooms_pattern.search(container_text)
+        bedrooms_match = bedrooms_pattern.search(container_text)
+
+        listings[href] = {
+            "source": "Touw Vastgoed", "title": title, "href": href,
+            "location": neighbourhood, "price": price,
+            "size": int(size_match.group(1)) if size_match else None,
+            "rooms": int(bedrooms_match.group(1)) if bedrooms_match else (int(rooms_match.group(1)) if rooms_match else None),
+            "extra": "",
+        }
+
+    return list(listings.values())
+
+
+# ========================================================================
 # Seen-tracking, report building, main
 # ========================================================================
 def seen_key(listing):
@@ -1292,7 +1385,7 @@ def build_html(matches, checked_at):
     # Group matches by source, preserving a sensible fixed order
     source_order = ["Ben Housing", "LIV Residential", "Rental Rotterdam", "Oude Delft", "Rent Valley",
                     "Verra Makelaars", "Van Weelde Vastgoed", "ikwilhuren.nu", "070 Wonen", "Hekking NVM",
-                    "NRW Wonen"]
+                    "NRW Wonen", "Touw Vastgoed"]
     by_source = {s: [] for s in source_order}
     for l in matches:
         by_source.setdefault(l["source"], []).append(l)
@@ -1408,6 +1501,7 @@ def main():
         ("070 Wonen", scrape_070wonen),
         ("Hekking NVM", scrape_hekking),
         ("NRW Wonen", scrape_nrwwonen),
+        ("Touw Vastgoed", scrape_touwvastgoed),
     ]
 
     for name, scraper_fn in scrapers:
