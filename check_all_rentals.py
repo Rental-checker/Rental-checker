@@ -27,6 +27,7 @@ Run this periodically (e.g. once or twice a day) via cron / Task Scheduler.
 """
 
 import json
+import os
 import re
 import time
 from pathlib import Path
@@ -1486,6 +1487,53 @@ def build_html(matches, checked_at):
     return html
 
 
+def send_new_listing_notification(new_listings):
+    """Sends a push notification via ntfy.sh (https://ntfy.sh) if a new
+    listing was found. Reads the topic name from the NTFY_TOPIC
+    environment variable rather than hardcoding it here, since this repo
+    is public - anyone could see and abuse a hardcoded topic name.
+    Set NTFY_TOPIC as a GitHub Actions repo secret (Settings > Secrets and
+    variables > Actions), not directly in this file.
+    Optionally set REPORT_URL too (e.g. your GitHub Pages link) to make
+    the notification open your report when tapped.
+    """
+    topic = os.environ.get("NTFY_TOPIC")
+    if not topic:
+        return  # notifications not configured - skip silently
+    if not new_listings:
+        return
+
+    count = len(new_listings)
+    title = f"{count} new rental listing{'s' if count != 1 else ''} found!"
+
+    lines = []
+    for l in sorted(new_listings, key=lambda x: x["price"])[:8]:
+        lines.append(f"• {l['source']}: {l['title']} - €{format_price(l['price'])}")
+    if count > 8:
+        lines.append(f"... and {count - 8} more")
+    message = "\n".join(lines)
+
+    headers = {
+        "Title": title,  # ASCII-only, safe as an HTTP header
+        "Priority": "default",
+        "Tags": "house",
+    }
+    report_url = os.environ.get("REPORT_URL")
+    if report_url:
+        headers["Click"] = report_url
+
+    try:
+        requests.post(
+            f"https://ntfy.sh/{topic}",
+            data=message.encode("utf-8"),  # body can safely contain € and accents
+            headers=headers,
+            timeout=15,
+        )
+        print(f"Sent push notification for {count} new listing(s).")
+    except Exception as e:
+        print(f"Failed to send push notification: {e}")
+
+
 def main():
     all_listings = []
 
@@ -1517,6 +1565,7 @@ def main():
 
     seen = load_seen()
     new_keys = [seen_key(l) for l in all_listings if seen_key(l) not in seen]
+    new_listings = [l for l in all_listings if seen_key(l) in new_keys]
 
     checked_at = datetime.now().strftime("%Y-%m-%d %H:%M")
     for l in all_listings:
@@ -1535,6 +1584,8 @@ def main():
     print(f"Report written to {REPORT_FILE}")
     if new_keys:
         print(f"{len(new_keys)} NEW listing(s) since last run!")
+
+    send_new_listing_notification(new_listings)
 
 
 if __name__ == "__main__":
