@@ -36,6 +36,9 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Run the rental checker
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          REPORT_URL: ${{ secrets.REPORT_URL }}
         run: python check_all_rentals.py
 
       - name: Publish report to GitHub Pages folder
