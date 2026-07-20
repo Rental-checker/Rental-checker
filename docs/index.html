@@ -33,9 +33,9 @@
 </head>
 <body>
   <h1>Alle huurwoningen onder €1500</h1>
-  <div class="meta">Laatst gecontroleerd: 2026-07-20 13:42 &middot; 33 match(es), waarvan 1 nieuw (laatste 24u) & 8 recent (1-2 dagen)</div>
+  <div class="meta">Laatst gecontroleerd: 2026-07-20 15:13 &middot; 33 match(es), waarvan 1 nieuw (laatste 24u) & 7 recent (1-2 dagen)</div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('all', this)">All (33)</button><button class="tab-btn" onclick="showTab('ben-housing', this)">Ben Housing (4)</button><button class="tab-btn" onclick="showTab('liv-residential', this)">LIV Residential (5)</button><button class="tab-btn" onclick="showTab('rental-rotterdam', this)">Rental Rotterdam (7)</button><button class="tab-btn" onclick="showTab('oude-delft', this)">Oude Delft (0)</button><button class="tab-btn" onclick="showTab('rent-valley', this)">Rent Valley (1)</button><button class="tab-btn" onclick="showTab('verra-makelaars', this)">Verra Makelaars (7)</button><button class="tab-btn" onclick="showTab('van-weelde-vastgoed', this)">Van Weelde Vastgoed (0)</button><button class="tab-btn" onclick="showTab('ikwilhuren-nu', this)">ikwilhuren.nu (0)</button><button class="tab-btn" onclick="showTab('070-wonen', this)">070 Wonen (2)</button><button class="tab-btn" onclick="showTab('hekking-nvm', this)">Hekking NVM (2)</button><button class="tab-btn" onclick="showTab('nrw-wonen', this)">NRW Wonen (4)</button><button class="tab-btn" onclick="showTab('touw-vastgoed', this)">Touw Vastgoed (1)</button>
+    <button class="tab-btn active" onclick="showTab('all', this)">All (33)</button><button class="tab-btn" onclick="showTab('ben-housing', this)">Ben Housing (4)</button><button class="tab-btn" onclick="showTab('liv-residential', this)">LIV Residential (5)</button><button class="tab-btn" onclick="showTab('rental-rotterdam', this)">Rental Rotterdam (7)</button><button class="tab-btn" onclick="showTab('oude-delft', this)">Oude Delft (1)</button><button class="tab-btn" onclick="showTab('rent-valley', this)">Rent Valley (1)</button><button class="tab-btn" onclick="showTab('verra-makelaars', this)">Verra Makelaars (7)</button><button class="tab-btn" onclick="showTab('van-weelde-vastgoed', this)">Van Weelde Vastgoed (0)</button><button class="tab-btn" onclick="showTab('ikwilhuren-nu', this)">ikwilhuren.nu (0)</button><button class="tab-btn" onclick="showTab('070-wonen', this)">070 Wonen (2)</button><button class="tab-btn" onclick="showTab('hekking-nvm', this)">Hekking NVM (2)</button><button class="tab-btn" onclick="showTab('nrw-wonen', this)">NRW Wonen (3)</button><button class="tab-btn" onclick="showTab('touw-vastgoed', this)">Touw Vastgoed (1)</button>
   </div>
   <div class="tab-panel active" id="tab-all"><table>
   <thead>
@@ -289,23 +289,6 @@
           <td>2026-07-18 02:44</td>
         </tr>
 
-        <tr class="is-recent"
-            data-location="2552GE 's-Gravenhage"
-            data-price="1077.0"
-            data-size="39"
-            data-rooms="1"
-            data-added="2026-07-18 16:24"
-            data-source="NRW Wonen">
-          <td data-source="NRW Wonen"><span class="source-badge">NRW Wonen</span></td>
-          <td><span class="recent-badge">NIEUW</span><a href="https://nrw-wonen.nl/aanbod/huis/12341" target="_blank">Oude Haagweg 487 51</a></td>
-          <td>2552GE 's-Gravenhage</td>
-          <td>€ 1.077</td>
-          <td>39 m²</td>
-          <td>1</td>
-          <td>–</td>
-          <td>2026-07-18 16:24</td>
-        </tr>
-
         <tr class=""
             data-location="Carnisse"
             data-price="1100"
@@ -508,6 +491,23 @@
           <td>2</td>
           <td>–</td>
           <td>2026-07-13 03:19</td>
+        </tr>
+
+        <tr class=""
+            data-location=""
+            data-price="1381.0"
+            data-size="30"
+            data-rooms=""
+            data-added="2026-07-15 13:59"
+            data-source="Oude Delft">
+          <td data-source="Oude Delft"><span class="source-badge">Oude Delft</span></td>
+          <td><a href="https://oudedelft.com/oude-delft-aa/" target="_blank">Oude Delft Aa</a></td>
+          <td></td>
+          <td>€ 1.381</td>
+          <td>30 m²</td>
+          <td>–</td>
+          <td>–</td>
+          <td>2026-07-15 13:59</td>
         </tr>
 
         <tr class=""
@@ -922,7 +922,37 @@
           <td>Appartement</td>
           <td>2026-07-16 14:01</td>
         </tr></tbody>
-</table></div><div class="tab-panel" id="tab-oude-delft"><div class="empty">Geen woningen gevonden die aan je filters voldoen.</div></div><div class="tab-panel" id="tab-rent-valley"><table>
+</table></div><div class="tab-panel" id="tab-oude-delft"><table>
+  <thead>
+    <tr>
+      
+      <th>Woning</th>
+      <th class="sortable" data-key="location" onclick="sortTable(this)">Locatie</th>
+      <th class="sortable" data-key="price" data-numeric="1" onclick="sortTable(this)">Prijs</th>
+      <th class="sortable" data-key="size" data-numeric="1" onclick="sortTable(this)">Oppervlakte</th>
+      <th class="sortable" data-key="rooms" data-numeric="1" onclick="sortTable(this)">Kamers</th>
+      <th>Extra</th>
+      <th class="sortable" data-key="added" onclick="sortTable(this)">Toegevoegd</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr class=""
+            data-location=""
+            data-price="1381.0"
+            data-size="30"
+            data-rooms=""
+            data-added="2026-07-15 13:59"
+            data-source="Oude Delft">
+          
+          <td><a href="https://oudedelft.com/oude-delft-aa/" target="_blank">Oude Delft Aa</a></td>
+          <td></td>
+          <td>€ 1.381</td>
+          <td>30 m²</td>
+          <td>–</td>
+          <td>–</td>
+          <td>2026-07-15 13:59</td>
+        </tr></tbody>
+</table></div><div class="tab-panel" id="tab-rent-valley"><table>
   <thead>
     <tr>
       
@@ -1224,23 +1254,6 @@
           <td>2</td>
           <td>–</td>
           <td>2026-07-20 08:32</td>
-        </tr>
-
-        <tr class="is-recent"
-            data-location="2552GE 's-Gravenhage"
-            data-price="1077.0"
-            data-size="39"
-            data-rooms="1"
-            data-added="2026-07-18 16:24"
-            data-source="NRW Wonen">
-          
-          <td><span class="recent-badge">NIEUW</span><a href="https://nrw-wonen.nl/aanbod/huis/12341" target="_blank">Oude Haagweg 487 51</a></td>
-          <td>2552GE 's-Gravenhage</td>
-          <td>€ 1.077</td>
-          <td>39 m²</td>
-          <td>1</td>
-          <td>–</td>
-          <td>2026-07-18 16:24</td>
         </tr>
 
         <tr class="is-recent"
