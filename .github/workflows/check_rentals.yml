@@ -2,15 +2,22 @@ name: Check rentals
 
 on:
   schedule:
-    # Every hour, at minute 47 (a bit before the hour - also avoids the
-    # traffic spike GitHub sees right on the hour, when huge numbers of
-    # other repos' cron jobs all fire at once).
-    # Hours 5-21 UTC = roughly 7:47am-11:47pm Netherlands time (CEST, UTC+2)
-    # right now. After the clocks change back to CET (UTC+1) in late
-    # October, this will drift an hour earlier locally (~6:47am-10:47pm)
-    # until this line is updated to "47 6-22 * * *" for winter.
-    # Format: minute hour day month weekday (all in UTC)
-    - cron: "47 5-21 * * *"
+    # Trying minute :13 instead of :47 - a less "round" offset, in case
+    # that helps avoid whatever's causing GitHub to skip/delay some
+    # scheduled runs during the day (this is a best-effort experiment,
+    # not a guaranteed fix - GitHub's schedule trigger doesn't promise
+    # exact timing, especially under high platform load).
+    #
+    # Daytime: hourly. Hours 5-16 UTC = roughly 7:13am-6:13pm Netherlands
+    # time (CEST, UTC+2) right now.
+    - cron: "13 5-16 * * *"
+    # Evening: every 2 hours instead of hourly, since daytime coverage
+    # matters more. Hours 17,19,21 UTC = roughly 7:13pm, 9:13pm, 11:13pm
+    # Netherlands time (CEST, UTC+2) right now.
+    - cron: "13 17-21/2 * * *"
+    # After the clocks change back to CET (UTC+1) in late October, all of
+    # this will drift an hour earlier locally until updated for winter:
+    # daytime -> "13 6-17 * * *", evening -> "13 18-22/2 * * *"
   workflow_dispatch: {}  # lets you trigger a run manually from the Actions tab
 
 permissions:
