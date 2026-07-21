@@ -2,22 +2,26 @@ name: Check rentals
 
 on:
   schedule:
-    # Trying minute :13 instead of :47 - a less "round" offset, in case
-    # that helps avoid whatever's causing GitHub to skip/delay some
-    # scheduled runs during the day (this is a best-effort experiment,
-    # not a guaranteed fix - GitHub's schedule trigger doesn't promise
-    # exact timing, especially under high platform load).
+    # Shifted 1 hour earlier than the "target" time to compensate for a
+    # consistent lag we observed (runs landing anywhere from ~20 to ~90
+    # minutes late, including the last evening run regularly slipping
+    # past midnight). This is a pragmatic compensation, not a real fix -
+    # GitHub's schedule trigger doesn't guarantee exact timing, and the
+    # delay didn't meaningfully change when we tried a different minute
+    # offset, so it looks like general queuing delay rather than
+    # something tied to which minute we pick.
     #
-    # Daytime: hourly. Hours 5-16 UTC = roughly 7:13am-6:13pm Netherlands
-    # time (CEST, UTC+2) right now.
-    - cron: "13 5-16 * * *"
-    # Evening: every 2 hours instead of hourly, since daytime coverage
-    # matters more. Hours 17,19,21 UTC = roughly 7:13pm, 9:13pm, 11:13pm
-    # Netherlands time (CEST, UTC+2) right now.
-    - cron: "13 17-21/2 * * *"
+    # Daytime: hourly. Hours 4-15 UTC = roughly 6:13am-5:13pm Netherlands
+    # time (CEST, UTC+2) right now - intended to actually land around
+    # 7:13am-6:13pm after the typical delay.
+    - cron: "13 4-15 * * *"
+    # Evening: every 2 hours. Hours 16,18,20 UTC = roughly 6:13pm, 8:13pm,
+    # 10:13pm Netherlands time - intended to actually land around
+    # 7:13pm, 9:13pm, 11:13pm after the typical delay.
+    - cron: "13 16-20/2 * * *"
     # After the clocks change back to CET (UTC+1) in late October, all of
     # this will drift an hour earlier locally until updated for winter:
-    # daytime -> "13 6-17 * * *", evening -> "13 18-22/2 * * *"
+    # daytime -> "13 5-16 * * *", evening -> "13 17-21/2 * * *"
   workflow_dispatch: {}  # lets you trigger a run manually from the Actions tab
 
 permissions:
